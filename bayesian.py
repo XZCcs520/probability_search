@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import sys
 
 
 def set_target(dim):
@@ -21,10 +22,8 @@ def rule2_belief(board, belief, dim):
     ret = np.zeros((dim, dim))
     for i in range(dim):
         for j in range(dim):
-            if belief[i][j] == 0:
-                ret[i][j] = 0
-            else:
-                ret[i][j] = (1.0 - P[board[i][j]])/belief[i][j]
+            ret[i][j] = (1 - P[board[i][j]]) * belief[i][j]
+
     return ret
 
 
@@ -60,6 +59,8 @@ def update(board, belief, dim, row, col):
         for j in range(dim):
             if i != row or j != col:
                 belief[i][j] = 1.0 * belief[i][j] / (P[board[i][j]] * belief[i][i] + 1.0 - belief[i][j])
+                if belief[i][j] < sys.float_info.epsilon:
+                    belief[i][j] = 0
 
 
 def search(board, belief, target_row, target_col, dim, row, col):
@@ -111,6 +112,8 @@ def rule2_solver(board_dim):
     print "belief: "
     print belief
     belief_rule2 = rule2_belief(board, belief, board_dim)
+    print "belief_rule2 :"
+    print belief_rule2
     # P(Target not found in Cell[i]| Target is in Cell[i]), probability for flat, hill, forest, cave
     P = [0.1, 0.3, 0.7, 0.9]
     # Implemented with Rule 1
@@ -124,6 +127,8 @@ def rule2_solver(board_dim):
         print s_row, s_col
         flag = search(board, belief, target_row, target_col, board_dim, s_row, s_col)
         belief_rule2 = rule2_belief(board, belief, board_dim)
+        print "belief_rule2 :"
+        print belief_rule2
         print "belief: "
         print belief
         if flag == True:
@@ -248,10 +253,10 @@ def cost_rule1_solver(board_dim,begin_point):
 
 def __main():
     # board_dim = int(input("Please enter a number indicating the dimension of grid: "))
-    board_dim = 2
+    board_dim = 50
     begin_point = [0, 0]
     #cell_prob = float(input("Please enter a float number indicating the probability of flat terrain: "))
-    print rule1_solver(board_dim)
+    print rule2_solver(board_dim)
     #print cost_rule1_solver(board_dim,begin_point)
 
 
