@@ -1,8 +1,10 @@
 import numpy as np
 import random
 
+
 def set_target(dim):
     return random.randrange(0, dim)
+
 
 def random_board(dim):
     type_prob = [0.4, 0.3, 0.2, 0.1]
@@ -49,21 +51,26 @@ def is_found(prob):
         return False
 
 
-def search_update(board, belief, target_row, target_col, dim, row, col):
+def update(board, belief, dim, row, col):
+    P = [0.1, 0.3, 0.7, 0.9]  # P(Target not found in Cell[i]| Target is in Cell[i]), probability for flat, hill, forest, cave
+    belief[row][col] = 1.0 * P[board[row][col]] * belief[row][col] / (P[board[row][col]] * belief[row][col] + 1.0 - belief[row][col])
+    # update other cells
+    for i in range(dim):
+        # print belief
+        for j in range(dim):
+            if i != row or j != col:
+                belief[i][j] = 1.0 * belief[i][j] / (P[board[i][j]] * belief[i][i] + 1.0 - belief[i][j])
+
+
+def search(board, belief, target_row, target_col, dim, row, col):
     P = [0.1, 0.3, 0.7, 0.9] # P(Target not found in Cell[i]| Target is in Cell[i]), probability for flat, hill, forest, cave
     if target_row == row and target_col == col:
         if is_found(P[board[row][col]]) == False:
-            belief[row][col] = 1.0 * P[board[row][col]] * belief[row][col] / (belief[row][col] + (1.0 - belief[row][col])) * P[board[row][col]]
-            # update other cells
-            for i in range(dim):
-                # print belief
-                for j in range(dim):
-                    if i != row and j != col:
-                        belief[i][j] = 1.0 * belief[i][j] / (belief[i][j] + (1.0 - belief[i][j]) * P[board[i][j]])
+            update(board, belief, dim, row, col)
         else:
             return True
     else:
-        belief[row][col] = 0.0
+        update(board, belief, dim, row, col)
     return False
 
 
@@ -86,7 +93,7 @@ def rule1_solver(board_dim):
         s_row, s_col = find_max_prob(belief, board_dim)
         print "max prob point"
         print s_row, s_col
-        flag = search_update(board, belief, target_row, target_col, board_dim, s_row, s_col)
+        flag = search(board, belief, target_row, target_col, board_dim, s_row, s_col)
         print "belief: "
         print belief
         if flag == True:
@@ -115,7 +122,7 @@ def rule2_solver(board_dim):
         s_row, s_col = find_max_prob(belief_rule2, board_dim)
         print "max prob point"
         print s_row, s_col
-        flag = search_update(board, belief, target_row, target_col, board_dim, s_row, s_col)
+        flag = search(board, belief, target_row, target_col, board_dim, s_row, s_col)
         belief_rule2 = rule2_belief(board, belief, board_dim)
         print "belief: "
         print belief
@@ -123,6 +130,7 @@ def rule2_solver(board_dim):
             break
     print "max step"
     return step
+
 
 def find_min_cost(cost):
     min = float("inf")
@@ -135,6 +143,7 @@ def find_min_cost(cost):
     min_cost_point = [row, col]
     return min_cost_point
 
+
 def cost_mat(belief_rule2,current_point):
     cost = np.zeros((len(belief_rule2), len(belief_rule2)))
     for i in range(0, len(belief_rule2)):
@@ -142,9 +151,11 @@ def cost_mat(belief_rule2,current_point):
            cost[i][j] = abs(i - current_point[0]) + abs(j - current_point[1]) + 1 + 2 / belief_rule2[i][j]
     return cost
 
+
 def actual_cost(current_point, next_point):
     actual_cost = abs(current_point[0] - next_point[0]) + abs(current_point[1] - next_point[1]) + 1
     return actual_cost
+
 
 def cost_rule3_solver(board_dim,begin_point):
     board, belief, target_row, target_col = random_board(board_dim)
@@ -166,13 +177,14 @@ def cost_rule3_solver(board_dim,begin_point):
         s_row, s_col = current_point[0], current_point[1]
         print "min cost point"
         print s_row, s_col
-        flag = search_update(board, belief, target_row, target_col, board_dim, s_row, s_col)
+        flag = search(board, belief, target_row, target_col, board_dim, s_row, s_col)
         belief_rule2 = rule2_belief(board, belief, board_dim)
         cost = cost_mat(belief_rule2,current_point)
         if flag == True:
             break
     print "Total cost"
     return total_cost
+
 
 def cost_rule2_solver(board_dim,begin_point):
     board, belief, target_row, target_col = random_board(board_dim)
@@ -195,13 +207,14 @@ def cost_rule2_solver(board_dim,begin_point):
         s_row, s_col = current_point[0], current_point[1]
         print "min cost point"
         print s_row, s_col
-        flag = search_update(board, belief, target_row, target_col, board_dim, s_row, s_col)
+        flag = search(board, belief, target_row, target_col, board_dim, s_row, s_col)
         belief_rule2 = rule2_belief(board, belief, board_dim)
         # cost = cost_mat(belief_rule2,current_point)
         if flag == True:
             break
     print "Total cost"
     return total_cost
+
 
 def cost_rule1_solver(board_dim,begin_point):
     board, belief, target_row, target_col = random_board(board_dim)
@@ -224,7 +237,7 @@ def cost_rule1_solver(board_dim,begin_point):
         s_row, s_col = current_point[0], current_point[1]
         print "min cost point"
         print s_row, s_col
-        flag = search_update(board, belief, target_row, target_col, board_dim, s_row, s_col)
+        flag = search(board, belief, target_row, target_col, board_dim, s_row, s_col)
         # belief_rule2 = rule2_belief(board, belief, board_dim)
         # cost = cost_mat(belief_rule2,current_point)
         if flag == True:
@@ -232,13 +245,14 @@ def cost_rule1_solver(board_dim,begin_point):
     print "Total cost"
     return total_cost
 
+
 def __main():
     # board_dim = int(input("Please enter a number indicating the dimension of grid: "))
-    board_dim = 50
-    begin_point = [0,0]
+    board_dim = 2
+    begin_point = [0, 0]
     #cell_prob = float(input("Please enter a float number indicating the probability of flat terrain: "))
-    #print rule1_solver(board_dim)
-    print cost_rule1_solver(board_dim,begin_point)
+    print rule1_solver(board_dim)
+    #print cost_rule1_solver(board_dim,begin_point)
 
 
 
