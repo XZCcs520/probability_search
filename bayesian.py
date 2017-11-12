@@ -250,6 +250,22 @@ def cost_rule1_solver(board_dim,begin_point):
     print "Total cost"
     return total_cost
 
+def movingtarget(current_target):
+    moving_number = random.randrange(0, 4)
+    if moving_number == 1:    # case 1: up
+        row = current_target[0] - 1
+        col = current_target[1]
+    elif moving_number == 2:  # case 2: down
+        row = current_target[0] + 1
+        col = current_target[1]
+    elif moving_number == 3:  # case 3: left
+        row = current_target[0]
+        col = current_target[1] - 1
+    else:                     # case 4: right
+        row = current_target[0]
+        col = current_target[1] + 1
+    next_target = row, col
+    return next_target
 
 def __main():
     # board_dim = int(input("Please enter a number indicating the dimension of grid: "))
@@ -257,8 +273,10 @@ def __main():
     begin_point = [0, 0]
     #cell_prob = float(input("Please enter a float number indicating the probability of flat terrain: "))
     print rule2_solver(board_dim)
-    #print cost_rule1_solver(board_dim,begin_point)
+    # print cost_rule1_solver(board_dim,begin_point)
 
 
 
-__main()
+#__main()
+next_point = movingtarget([1, 2])
+print next_point
