@@ -250,15 +250,124 @@ def cost_rule1_solver(board_dim,begin_point):
     print "Total cost"
     return total_cost
 
+def movingtarget(current_target,dim):
+    moving_number = random.randrange(0, 4)
+    if moving_number == 1:    # case 1: up
+        row = current_target[0] - 1
+        col = current_target[1]
+        if row < 0:
+            print "row jjj"
+            row, col = movingtarget(current_target, dim)
 
+    elif moving_number == 2:  # case 2: down
+        row = current_target[0] + 1
+        col = current_target[1]
+        if row > 49:
+            row, col = movingtarget(current_target, dim)
+
+    elif moving_number == 3:  # case 3: left
+        row = current_target[0]
+        col = current_target[1] - 1
+        if col < 0:
+            print "col jin"
+            row, col = movingtarget(current_target, dim)
+
+    else:                     # case 4: right
+        row = current_target[0]
+        col = current_target[1] + 1
+        if col > 49:
+            row, col = movingtarget(current_target, dim)
+
+    next_target = row, col
+    return next_target
+
+def surveillance(board, current_target, next_target):
+    print board[current_target[0]][current_target[1]], board[next_target[0]][next_target[1]]
+    return board[current_target[0]][current_target[1]], board[next_target[0]][next_target[1]]
+
+def judge_Fisrt(TypeList1, TypeList2):
+    if(TypeList1[0] == TypeList2[0]):
+        predit_next_target_type = TypeList2[1]
+    if (TypeList1[0] == TypeList2[1]):
+        predit_next_target_type = TypeList2[0]
+
+    if (TypeList1[1] == TypeList2[0]):
+        predit_next_target_type = TypeList2[1]
+    if (TypeList1[1] == TypeList2[1]):
+        predit_next_target_type = TypeList2[0]
+
+    print predit_next_target_type
+    return predit_next_target_type
+
+def judge_Second(TypeList, last_target_type):
+    if(last_target_type == TypeList[0]):
+        predit_next_target_type = TypeList[1]
+    if(last_target_type == TypeList[1]):
+        predit_next_target_type = TypeList[0]
+    return predit_next_target_type
+
+def find_type_max_prob(board, belief, dim, predit_next_type):
+    max = -1
+    col = 0
+    row = 0
+    for i in range(dim):
+        for j in range(dim):
+            if (belief[i][j] > max and board[i][j] == predit_next_type):
+                max = belief[i][j]
+                col = i
+                row = j
+    return col, row
+
+def moving_rule1_solver(board_dim):
+    board, belief, target_row, target_col = random_board(board_dim)
+    # print "board: "
+    # print board
+    # print "target position: "
+    # print target_row, target_col
+    # print "belief: "
+    # print belief
+    print '_________________'
+    s_row, s_col = find_max_prob(belief, board_dim)  # step1: search the max prob point
+    search(board, belief, target_row, target_col, board_dim, s_row, s_col)
+    current_target = target_row, target_col
+    next_target = movingtarget(current_target, board_dim)
+    print current_target, next_target
+    TypeList1 = surveillance(board, current_target, next_target)
+    s_row, s_col = find_max_prob(belief, board_dim)  # step2: search the max prob point
+    search(board, belief, target_row, target_col, board_dim, s_row, s_col)
+    current_target = next_target
+    next_target = movingtarget(current_target, board_dim)
+    print current_target, next_target
+    TypeList2 = surveillance(board, current_target, next_target)
+    predit_next_target_type = judge_Fisrt(TypeList1, TypeList2)
+    step = 2
+    while True:
+        step += 1
+        s_row, s_col = find_type_max_prob(board, belief, board_dim, predit_next_target_type)
+        print "type max prob point"
+        print s_row, s_col
+        flag = search(board, belief, target_row, target_col, board_dim, s_row, s_col)
+        current_target = next_target
+        next_target = movingtarget(current_target, board_dim)
+        TypeList = surveillance(board, current_target, next_target)
+        Last_target_type = predit_next_target_type
+        predit_next_target_type = judge_Second(TypeList, Last_target_type)
+        print "belief: "
+        print belief
+        if flag == True:
+            break
+    print "max step"
+    return step
 def __main():
     # board_dim = int(input("Please enter a number indicating the dimension of grid: "))
     board_dim = 50
     begin_point = [0, 0]
-    #cell_prob = float(input("Please enter a float number indicating the probability of flat terrain: "))
-    print rule2_solver(board_dim)
-    #print cost_rule1_solver(board_dim,begin_point)
-
+    # cell_prob = float(input("Please enter a float number indicating the probability of flat terrain: "))
+    # print rule2_solver(board_dim)
+    # print cost_rule1_solver(board_dim,begin_point)
+    print moving_rule1_solver(board_dim)
 
 
 __main()
+# next_point = movingtarget([1, 2])
+# print next_point
