@@ -3,7 +3,7 @@ import numpy as np
 
 
 def test_random_board():
-    board, belief, target_row, target_col= bayesian.random_board(10)
+    board, belief, target_row, target_col = bayesian.random_board(10)
     print board
     print belief
     print target_row
@@ -21,4 +21,3 @@ def _main():
     #test_random_board()
 
 
-_main()
