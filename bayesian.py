@@ -257,23 +257,26 @@ def movingtarget(current_target,dim):
         col = current_target[1]
         if row < 0:
             print "row jjj"
-            movingtarget(current_target, dim)
+            row, col = movingtarget(current_target, dim)
+
     elif moving_number == 2:  # case 2: down
         row = current_target[0] + 1
         col = current_target[1]
         if row > 49:
-            movingtarget(current_target, dim)
+            row, col = movingtarget(current_target, dim)
+
     elif moving_number == 3:  # case 3: left
         row = current_target[0]
         col = current_target[1] - 1
         if col < 0:
             print "col jin"
-            movingtarget(current_target, dim)
+            row, col = movingtarget(current_target, dim)
+
     else:                     # case 4: right
         row = current_target[0]
         col = current_target[1] + 1
         if col > 49:
-            movingtarget(current_target, dim)
+            row, col = movingtarget(current_target, dim)
 
     next_target = row, col
     return next_target
@@ -283,11 +286,6 @@ def surveillance(board, current_target, next_target):
     return board[current_target[0]][current_target[1]], board[next_target[0]][next_target[1]]
 
 def judge_Fisrt(TypeList1, TypeList2):
-    print TypeList1[0], TypeList1[1]
-    print '_________________'
-    print TypeList2[0], TypeList2[1]
-    print '_________________'
-
     if(TypeList1[0] == TypeList2[0]):
         predit_next_target_type = TypeList2[1]
     if (TypeList1[0] == TypeList2[1]):
