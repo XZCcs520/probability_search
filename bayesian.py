@@ -153,7 +153,11 @@ def cost_mat(belief_rule2,current_point):
     cost = np.zeros((len(belief_rule2), len(belief_rule2)))
     for i in range(0, len(belief_rule2)):
         for j in range(0, len(belief_rule2)):
-           cost[i][j] = abs(i - current_point[0]) + abs(j - current_point[1]) + 1 + 2 / belief_rule2[i][j]
+            if belief_rule2[i][j] == 0:
+                cost[i][j] = float("inf")
+            elif belief_rule2[i][j] != 0:
+                cost[i][j] = (abs(i - current_point[0]) + abs(j - current_point[1]) + 1)*(1 / abs(belief_rule2[i][j]))
+           # cost[i][j] = abs(i - current_point[0]) + abs(j - current_point[1]) + 1 + 2 / belief_rule2[i][j]
     return cost
 
 
@@ -187,6 +191,9 @@ def cost_rule3_solver(board_dim,begin_point):
         cost = cost_mat(belief_rule2,current_point)
         if flag == True:
             break
+        if total_cost > 1000000:
+            total_cost = None
+            break
     print "Total cost"
     return total_cost
 
@@ -201,7 +208,7 @@ def cost_rule2_solver(board_dim,begin_point):
     print belief
     belief_rule2 = rule2_belief(board, belief, board_dim)
     # P(Target not found in Cell[i]| Target is in Cell[i]), probability for flat, hill, forest, cave
-    cost = cost_mat(belief_rule2,begin_point)
+    # cost = cost_mat(belief_rule2,begin_point)
     total_cost = 0
     current_point = begin_point
     while True:
@@ -216,6 +223,9 @@ def cost_rule2_solver(board_dim,begin_point):
         belief_rule2 = rule2_belief(board, belief, board_dim)
         # cost = cost_mat(belief_rule2,current_point)
         if flag == True:
+            break
+        if total_cost > 1000000:
+            total_cost = None
             break
     print "Total cost"
     return total_cost
@@ -246,6 +256,9 @@ def cost_rule1_solver(board_dim,begin_point):
         # belief_rule2 = rule2_belief(board, belief, board_dim)
         # cost = cost_mat(belief_rule2,current_point)
         if flag == True:
+            break
+        if total_cost > 1000000:
+            total_cost = None
             break
     print "Total cost"
     return total_cost
