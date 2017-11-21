@@ -53,6 +53,93 @@ print mean_cost_rule3
 # print "mean cost rule1"
 # print mean_cost_rule1
 
+'''
+def fixed_map test():
+    #board_dim = 50
+    #board, belief, target_row, target_col = bayesian.random_board(board_dim)
 
+    # Caution: you must change bayesian.py a little to run fixed board iteration.
+
+    avg = []
+    sum = 0
+    while True:
+        board_dim = 50
+        board, belief, target_row, target_col = bayesian.random_board(board_dim)
+        if board[target_row][target_col] == 0:
+            sum = 0
+            for i in range(5):
+                sum += bayesian.rule1_solver(board, belief, target_row, target_col)
+            print "0-rule1"
+            print sum/5
+            avg.append(sum / 5)
+            sum = 0
+            for i in range(5):
+                sum += bayesian.rule2_solver(board, belief, target_row, target_col)
+            print "0-rule2"
+            print sum/5
+            avg.append(sum / 5)
+
+            break
+
+    while True:
+        board_dim = 50
+        board, belief, target_row, target_col = bayesian.random_board(board_dim)
+        if board[target_row][target_col] == 1:
+            sum = 0
+            for i in range(5):
+                sum += bayesian.rule1_solver(board, belief, target_row, target_col)
+            print "1-rule1"
+            print sum / 5
+            avg.append(sum / 5)
+            sum = 0
+            for i in range(5):
+                sum += bayesian.rule2_solver(board, belief, target_row, target_col)
+            print "1-rule2"
+            print sum / 5
+            avg.append(sum / 5)
+
+            break
+
+    while True:
+        board_dim = 50
+        board, belief, target_row, target_col = bayesian.random_board(board_dim)
+        if board[target_row][target_col] == 2:
+            sum = 0
+            for i in range(5):
+                sum += bayesian.rule1_solver(board, belief, target_row, target_col)
+            print sum / 5
+            avg.append(sum / 5)
+            sum = 0
+            for i in range(5):
+                sum += bayesian.rule2_solver(board, belief, target_row, target_col)
+            print sum / 5
+            avg.append(sum / 5)
+
+            break
+
+    while True:
+        board_dim = 50
+        board, belief, target_row, target_col = bayesian.random_board(board_dim)
+        if board[target_row][target_col] == 3:
+            sum = 0
+            for i in range(5):
+                sum += bayesian.rule1_solver(board, belief, target_row, target_col)
+            print sum / 5
+            avg.append(sum / 5)
+            sum = 0
+            for i in range(5):
+                sum += bayesian.rule2_solver(board, belief, target_row, target_col)
+            print sum / 5
+            avg.append(sum / 5)
+
+            break
+
+
+
+
+    print "------------------------------------------"
+    for i in avg:
+        print i
+'''
 elapsed = (time.clock() - start)
 print("Time used:", elapsed)
