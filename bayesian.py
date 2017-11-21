@@ -337,19 +337,19 @@ def find_type_max_prob(board, belief, dim, predit_next_type, TypeList):
         for i in range(dim):
             for j in range(dim):
                 if (belief[i][j] > max and board[i][j] == TypeList[0]):
-                    if (board[i - 1][j] == TypeList[0]):
+                    if (board[i - 1][j] == TypeList[1]):
                         max = belief[i][j]
                         col = i - 1
                         row = j
-                    if (board[i + 1][j] == TypeList[0]):
+                    if (board[i + 1][j] == TypeList[1]):
                         max = belief[i][j]
                         col = i + 1
                         row = j
-                    if (board[i][j - 1] == TypeList[0]):
+                    if (board[i][j - 1] == TypeList[1]):
                         max = belief[i][j - 1]
                         col = i
                         row = j - 1
-                    if (board[i][j + 1] == TypeList[0]):
+                    if (board[i][j + 1] == TypeList[1]):
                         max = belief[i][j]
                         col = i
                         row = j + 1
